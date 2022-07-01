@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/runtiva/bookings/pkg/config"
-	"github.com/runtiva/bookings/pkg/handlers"
-	"github.com/runtiva/bookings/pkg/render"
+	"github.com/runtiva/bookings/internal/config"
+	"github.com/runtiva/bookings/internal/handlers"
+	"github.com/runtiva/bookings/internal/render"
 
 	"github.com/alexedwards/scs/v2"
 )
@@ -35,7 +35,7 @@ func main() {
 	
 	// Initialize config and push into render
 	app.TemplateCache = tc
-	app.UseCache = true
+	app.UseCache = app.InProduction
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 	render.NewTemplates(&app)
@@ -47,6 +47,8 @@ func main() {
 	}
 
 	err = srv.ListenAndServe()
-	log.Fatal(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
